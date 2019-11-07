@@ -1,8 +1,8 @@
-import { Client } from 'pg';
+import {  Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const client = new Client({
+const pool = new Pool({
   user: process.PGUSER,
   password: process.env.PGPASSWORD,
   host: process.env.PGHOST,
@@ -12,11 +12,11 @@ const client = new Client({
 
 const connection = async () => {
   try {
-    await client.connect();
+    await pool.connect();
     console.log('connection successfull');
   } catch (error) {
     console.log(error);
   }
 };
 connection();
-export default client;
+export default pool;
