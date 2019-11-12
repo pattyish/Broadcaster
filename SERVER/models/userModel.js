@@ -1,13 +1,14 @@
-import UserHelper from '../helper/userHelp';
-
+import Userhelper from '../helper/userHelp';
+const Helper = new Userhelper();
 class Userschema {
   constructor(userData) {
-    this.id = new Date();
     this.firstName = userData.firstName;
     this.lastName = userData.lastName;
     this.email = userData.email;
-    this.phoneNumber = userData.phoneNumber;
-    this.password = UserHelper(userData.password);
+    this.phone = userData.phoneNumber;
+    this.userName = userData.userName,
+    this.password = userData.password;
+    this.status = false
   }
 
   displayUser() {
@@ -15,9 +16,10 @@ class Userschema {
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,
-      phoneNumber: this.phoneNumber,
+      phone: this.phoneNumber,
+      userName: this.userName,
     };
   }
 }
 
-export { Userschema as default };
+export default Userschema;

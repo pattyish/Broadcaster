@@ -6,16 +6,20 @@ class Dboperations {
   }
 
   async selectByField(field, params, operator = '=') {
+    const query = {
+      text: `SELECT * FROM ${this.tableName} WHERE ${field} ${operator} $1`,
+      values: [params]
+     };
     try {
-      const query = {
-        text: `SELECT * FROM ${this.tableName} WHERE ${field} ${operator} $1  RETURNING *`,
-        value: [params],
-      };
       const results = await pool.query(query);
-      const row = results.rows;
-      const rowsCount = results.rowCount;
-      return { row, rowsCount };
+      const row = results.rows[0];
+      const count = results.rowCount;
+      return {
+        row,
+        count
+      };
     } catch (error) {
+      console.log(`error on select ${error}`);
       return error;
     }
   }
@@ -32,7 +36,7 @@ class Dboperations {
     }
   }
 
-  async insertData(data) {
+  async insertData(data, ...par) {
     const params = [];
     const chunks = [];
     const values = [];
@@ -46,13 +50,17 @@ class Dboperations {
     chunks.push(`(${values.join(', ')})`);
     try {
       const insertQuery = {
-        text: `INSERT INTO ${this.tableName} (${keys.join(',')}) VALUES ${chunks.join(',')}  RETURNING *`,
-        params,
-      };
+        text: `INSERT INTO ${this.tableName} (${keys.join(',')}) VALUES ${chunks.join(',')} RETURNING *`,
+        values: params
+        };
+      console.log(keys.join(','));
+      console.log(params);
+      console.log(values);
+      console.log(chunks.join(','));
       const results = await pool.query(insertQuery);
       return results.rows;
     } catch (err) {
-      console.error(err);
+      console.log(`error on insert ${err}`);
     }
   }
 
