@@ -5,26 +5,24 @@ import dotenv from 'dotenv';
 
 
 dotenv.config();
-class UserHelper {
-  static async generateToken(userInfo) {
-    const Token = await jwt.sign(
+class Userhelper {
+  generateToken(userInfo) {
+    const Token = jwt.sign(
       { id: userInfo.id, email: userInfo.email, isAdmin: userInfo.isAdmin },
       process.env.SECRET_KEY, { expiresIn: '2d' },
     );
     return Token;
   }
 
-  static async hashPassword(userPassword) {
-    const hashedPassowrd = await bcrypt.hash(userPassword, 10);
-    return hashedPassowrd;
+  async hashPassword(userPassword) {
+    return  bcrypt.hashSync(userPassword, 10);
   }
 
-  static async comparePassword(userPassword, hashedPassword) {
-    const compare = await bcrypt.compare(userPassword, hashedPassword);
-    return compare;
+  comparePassword(userPassword, hashedPassword) {
+    return bcrypt.compareSync(userPassword, hashedPassword); 
   }
 
-  static signInUserValidation(body) {
+  signInUserValidation(body) {
     const schema = {
       email: Joi.string().email({ minDomainAtoms: 2 }).required(),
       password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
@@ -32,23 +30,26 @@ class UserHelper {
     return Joi.validate(body, schema);
   }
 
-  static validateForgotEmail(body) {
+  validateForgotEmail(usercredentail) {
     const schema = {
       email: Joi.string().email({ minDomainAtoms: 2 }).required(),
     };
     return Joi.validate(body, schema);
   }
 
-  static signUpUserValidation(body) {
+  signUpUserValidation(body){
     const schema = {
+      // id: Joi.string(),
       firstName: Joi.string().min(4).required(),
       lastName: Joi.string().min(4).required(),
       email: Joi.string().email({ minDomainAtoms: 2 }).required(),
       phoneNumber: Joi.string().min(10).max(13).required(),
+      userName: Joi.string().min(5).required(),
       password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+      status: Joi.boolean(),
     };
     return Joi.validate(body, schema);
   }
 }
 
-export { UserHelper as default };
+export default Userhelper;
